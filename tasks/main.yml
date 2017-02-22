@@ -1,0 +1,29 @@
+---
+
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+    install_recommends: no
+  with_items:
+    - unzip
+
+- name: Create group
+  group:
+    name: "{{ piwik_group }}"
+    system: yes
+    state: present
+
+- name: Create user
+  user:
+    name: "{{ piwik_user }}"
+    group: "{{ piwik_group }}"
+    home: "{{ piwik_home }}"
+    shell: /bin/sh
+    comment: "Piwik"
+    system: yes
+    state: present
+
+- include: deploy.yml
+- include: mariadb.yml
+- include: nginx.yml

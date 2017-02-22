@@ -1,0 +1,48 @@
+---
+
+- name: Make folder for application
+  file:
+    path: "{{ piwik_web_root }}"
+    state: directory
+    owner: "{{ piwik_user }}"
+    group: "{{ piwik_group }}"
+    mode: 0755
+
+- stat:
+    path: "{{ piwik_web_root }}/piwik"
+  register: piwik_path
+
+- name: Download Piwik
+  get_url:
+    url: "{{ piwik_download_url }}"
+    dest: /tmp/piwik.zip
+    mode: 0644
+  when: piwik_path.stat.exists == False
+
+- name: Unarchive Piwik app
+  unarchive:
+    src: /tmp/piwik.zip
+    copy: false
+    dest: "{{ piwik_web_root }}"
+  when: piwik_path.stat.exists == False
+
+- name: Set owner
+  file:
+    path: "{{ piwik_web_root }}/piwik"
+    state: directory
+    group: "{{ piwik_user }}"
+    owner: "{{ piwik_group }}"
+    recurse: yes
+
+- name: Set permissions
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ piwik_web_root }}/tmp"
+    - "{{ piwik_web_root }}/tmp/assets"
+    - "{{ piwik_web_root }}/tmp/cache"
+    - "{{ piwik_web_root }}/tmp/logs"
+    - "{{ piwik_web_root }}/tmp/tcpf"
+    - "{{ piwik_web_root }}/tmp/templates_c"

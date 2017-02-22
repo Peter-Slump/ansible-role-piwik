@@ -1,0 +1,38 @@
+---
+
+dependencies:
+    - src: https://github.com/Peter-Slump/ansible-role-nginx.git
+      version: 0.0.2
+      scm: git
+      name: nginx
+    - src: https://github.com/Peter-Slump/ansible-role-mariadb.git
+      version: 0.0.2
+      scm: git
+      name: mariadb
+    - src: https://github.com/Peter-Slump/ansible-role-php-fpm.git
+      version: 0.0.1
+      scm: git
+      name: php-fpm
+
+    - role: mariadb
+    - role: nginx
+      nginx_ssl_hostname: "{{ piwik_hostname }}"
+      nginx_use_letsencrypt: "{{ piwik_use_letsencrypt }}"
+      nginx_use_self_signed_ssl: "{{ piwik_use_self_signed_ssl }}"
+
+    - role: php-fpm
+      php_fpm_additional_packages:
+          - php7.0-curl
+          - php7.0-gd
+          - php7.0-cli
+          - php7.0-mysql
+          - php-xml
+          - php7.0-mbstring
+      php_fpm_pools:
+        - name: piwik
+          listen: '127.0.0.1:{{ piwik_php_port }}'
+          user: '{{ piwik_user }}'
+          group: '{{ piwik_group }}'
+          environment:
+            PATH: "{{ ansible_env.PATH }}"
+            HOSTNAME: "{{ ansible_hostname }}"
