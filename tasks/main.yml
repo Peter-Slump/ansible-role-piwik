@@ -25,5 +25,3 @@
     state: present
 
 - include: deploy.yml
-- include: mariadb.yml
-- include: nginx.yml

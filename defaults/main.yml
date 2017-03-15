@@ -12,9 +12,6 @@ piwik_database_password: ChAnGeMe
 
 piwik_download_url: https://builds.piwik.org/piwik.zip
 
-piwik_web_root: "{{ piwik_home }}"
-
-piwik_use_self_signed_ssl: False
-piwik_use_letsencrypt: False
+piwik_web_root: "{{ piwik_home }}/piwik"
 
 piwik_php_port: 9005
